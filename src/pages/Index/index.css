@@ -1,0 +1,19 @@
+* {
+  touch-action: pan-y;
+  touch-action: none;
+}
+.swiper {
+  position: relative;
+  height: 212px;
+}
+.nav {
+  padding: 0;
+  text-align: center;
+}
+.nav img {
+  height: 48px;
+}
+.nav h2 {
+  margin-top: 7px;
+  font-size: 13px;
+}
