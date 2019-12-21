@@ -36,18 +36,40 @@ const navs = [
 export default class News extends React.Component {
   state = {
     swipers: [],
-    isSwiperLoaded: false,
+    isSwiperLoaded: true,
   }
-  // 获取轮播图数据的方法
-  async getSwipers() {
-    const res = await this.get('/home/swiper')
+
+  // render导航
+  renderNav() {
+    return navs.map(item => (
+      <Flex.Item
+        key={item.id}
+        onClick={() => this.props.history.push(item.path)}
+      >
+        <img src={item.img} alt="" />
+        <p>{item.title}</p>
+      </Flex.Item>
+    ))
+  }
+  // 获取后台信息
+  getDatas = async path => {
+    const res = await this.get(path)
+    return res.data.body
+  }
+  async componentDidMount() {
+    const getSwipers = this.getDatas('/home/swiper')
+    const getHouse = this.getDatas('/home/groups')
+    // Promise.all()->
+    //1. 统一/一次性处理多个Promise对象
+    // 2. 用await修饰后, 返回的是多个Promise对象resolve的结果所在的数组
+    const datas = await Promise.all([getSwipers, getHouse])
     this.setState({
-      swipers: res.data.body,
-      isSwiperLoaded: true,
+      swipers: datas[0],
+      groups: datas[1],
     })
   }
   //  render轮播图
-  renderSwipers() {
+  renderSwipers = () => {
     return this.state.swipers.map(item => (
       <a
         key={item}
@@ -70,22 +92,6 @@ export default class News extends React.Component {
         />
       </a>
     ))
-  }
-  // render导航
-  renderNav() {
-    return navs.map(item => (
-      <Flex.Item
-        key={item.id}
-        onClick={() => this.props.history.push(item.path)}
-      >
-        <img src={item.img} alt="" />
-        <p>{item.title}</p>
-      </Flex.Item>
-    ))
-  }
-
-  componentDidMount() {
-    this.getSwipers()
   }
   render() {
     return (
