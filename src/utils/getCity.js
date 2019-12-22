@@ -2,7 +2,7 @@
 
 import {
     setCity,
-    getCity
+    getCity,
 } from './isCity.js'
 import {
     getAreaInfo
