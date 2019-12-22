@@ -1,12 +1,15 @@
 import axios from 'axios'
 import {
-    Component
-} from 'react'
-let base = 'http://localhost:8080'
-
+    Toast
+} from 'antd-mobile'
+const request = axios.create({
+    baseURL: `http://localhost:8080`
+})
 // 请求前拦截
-axios.interceptors.request.use(
+request.interceptors.request.use(
     config => {
+        // 开始动画
+        Toast.loading('加载中', 0, null, null)
         return config
     },
     err => {
@@ -16,8 +19,10 @@ axios.interceptors.request.use(
 )
 
 // 返回后拦截
-axios.interceptors.response.use(
+request.interceptors.response.use(
+
     data => {
+        Toast.hide()
         return data
     },
     err => {
@@ -32,49 +37,4 @@ axios.interceptors.response.use(
     }
 )
 
-// @RequestBody请求
-const postRequestBody = (url, params) => {
-    return axios({
-        method: 'post',
-        url: `${base}${url}`,
-        data: params,
-        headers: {
-            'Content-Type': 'application/json',
-            charset: 'utf-8',
-        },
-    })
-}
-
-// @RequsetParam请求
-const postRequestParam = (url, params) => {
-    return axios({
-        method: 'post',
-        url: `${base}${url}`,
-        data: params,
-        transformRequest: [
-            function (data) {
-                let ret = ''
-                for (let it in data) {
-                    ret +=
-                        encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-                }
-                return ret
-            },
-        ],
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-    })
-}
-
-const get = url => {
-    return axios({
-        method: 'get',
-        url: `${base}${url}`,
-    })
-}
-
-Component.prototype.get = get
-Component.prototype.postRequestBody = postRequestBody
-Component.prototype.postRequestParam = postRequestParam
-Component.prototype.base = base
+export default request

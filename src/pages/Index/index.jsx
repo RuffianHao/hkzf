@@ -1,10 +1,13 @@
 import React from 'react'
-import { Carousel, Flex, Grid, WingBlank } from 'antd-mobile'
+import { Carousel, Flex, Grid, WingBlank, NavBar, Icon } from 'antd-mobile'
 import './index.css'
 import Nav1 from '../../assets/images/nav-1.png'
 import Nav2 from '../../assets/images/nav-2.png'
 import Nav3 from '../../assets/images/nav-3.png'
 import Nav4 from '../../assets/images/nav-4.png'
+import request from '../../utils/axios.js'
+import { getDatas } from './api.js'
+import { getCurrCity } from '../../utils/getCity.js'
 // 导航菜单数据
 const navs = [
   {
@@ -32,35 +35,24 @@ const navs = [
     path: '/rent/add',
   },
 ]
+const baseURL = 'http://localhost:8080'
 export default class News extends React.Component {
   state = {
     swipers: [], // 轮播图
     isSwiperLoaded: false,
     groups: [], // 租房小组
     news: [], // 最新资讯
+    cityInfo: {
+      label: '上海',
+      value: '%E5%8C%97%E4%BA%AC',
+    },
   }
 
-  // render导航
-  renderNav() {
-    return navs.map(item => (
-      <Flex.Item
-        key={item.id}
-        onClick={() => this.props.history.push(item.path)}
-      >
-        <img src={item.img} alt="" />
-        <p>{item.title}</p>
-      </Flex.Item>
-    ))
-  }
-  // 获取后台信息
-  getDatas = async path => {
-    const res = await this.get(path)
-    return res.data.body
-  }
   async componentDidMount() {
-    const getSwipers = this.getDatas('/home/swiper')
-    const getHouse = this.getDatas('/home/groups')
-    const getNews = this.getDatas('/home/news')
+    this.loadCurrCity()
+    const getSwipers = getDatas('/home/swiper')
+    const getHouse = getDatas('/home/groups')
+    const getNews = getDatas('/home/news')
     // Promise.all()->
     //1. 统一/一次性处理多个Promise对象
     // 2. 用await修饰后, 返回的是多个Promise对象resolve的结果所在的数组
@@ -86,7 +78,7 @@ export default class News extends React.Component {
         }}
       >
         <img
-          src={this.base + item.imgSrc}
+          src={baseURL + item.imgSrc}
           alt=""
           style={{ width: '100%', verticalAlign: 'top' }}
           onLoad={() => {
@@ -106,7 +98,7 @@ export default class News extends React.Component {
           <h3>{item.title}</h3>
           <p>{item.desc}</p>
         </div>
-        <img src={this.base + item.imgSrc} alt={item.desc} />
+        <img src={baseURL + item.imgSrc} alt={item.desc} />
       </Flex>
     )
   }
@@ -115,7 +107,7 @@ export default class News extends React.Component {
     return this.state.news.map(item => (
       <div className="news-item" key={item.id}>
         <div className="imgWrap">
-          <img className="img" src={this.base + item.imgSrc} alt=""></img>
+          <img className="img" src={baseURL + item.imgSrc} alt=""></img>
         </div>
         <Flex className="content" justify="between" direction="column">
           <h3 className="title">{item.title}</h3>
@@ -127,15 +119,57 @@ export default class News extends React.Component {
       </div>
     ))
   }
-
+  // render导航
+  renderNav() {
+    return navs.map(item => (
+      <Flex.Item
+        key={item.id}
+        onClick={() => this.props.history.push(item.path)}
+      >
+        <img src={item.img} alt="" />
+        <p>{item.title}</p>
+      </Flex.Item>
+    ))
+  }
+  // 城市信息
+  loadCurrCity = () => {
+    getCurrCity().then(({ label, value }) => {
+      this.setState(() => {
+        return {
+          cityInfo: { ...this.state.cityInfo, label, value },
+        }
+      })
+    })
+  }
   render() {
     const { state } = this
 
     return (
       <div className="Index">
+        {/* 导航 */}
+        <NavBar
+          style={{ color: '#000' }}
+          mode="light"
+          leftContent={state.cityInfo.label}
+          onLeftClick={() => console.log('onLeftClick')}
+          rightContent={[
+            <Icon
+              key="0"
+              type="search"
+              style={{ marginRight: '16px' }}
+              onClick={() => {
+                this.props.history.push('/map')
+              }}
+            />,
+          ]}
+        >
+          自如租房
+        </NavBar>
+        {/* 导航 */}
+
         {/* 轮播图 */}
         <div className="swiper">
-          {this.state.isSwiperLoaded ? (
+          {state.isSwiperLoaded ? (
             <Carousel autoplay infinite autoplayInterval={3000}>
               {this.renderSwipers()}
             </Carousel>
