@@ -1,6 +1,5 @@
 import React from 'react'
-// SearchBar, WhiteSpace,
-import { Carousel, Flex } from 'antd-mobile'
+import { Carousel, Flex, Grid, WingBlank } from 'antd-mobile'
 import './index.css'
 import Nav1 from '../../assets/images/nav-1.png'
 import Nav2 from '../../assets/images/nav-2.png'
@@ -35,8 +34,10 @@ const navs = [
 ]
 export default class News extends React.Component {
   state = {
-    swipers: [],
-    isSwiperLoaded: true,
+    swipers: [], // 轮播图
+    isSwiperLoaded: false,
+    groups: [], // 租房小组
+    news: [], // 最新资讯
   }
 
   // render导航
@@ -59,14 +60,18 @@ export default class News extends React.Component {
   async componentDidMount() {
     const getSwipers = this.getDatas('/home/swiper')
     const getHouse = this.getDatas('/home/groups')
+    const getNews = this.getDatas('/home/news')
     // Promise.all()->
     //1. 统一/一次性处理多个Promise对象
     // 2. 用await修饰后, 返回的是多个Promise对象resolve的结果所在的数组
-    const datas = await Promise.all([getSwipers, getHouse])
+    const data = await Promise.all([getSwipers, getHouse, getNews])
     this.setState({
-      swipers: datas[0],
-      groups: datas[1],
+      swipers: data[0],
+      groups: data[1],
+      news: data[2],
+      isSwiperLoaded: true,
     })
+    console.log(this.state.news)
   }
   //  render轮播图
   renderSwipers = () => {
@@ -93,7 +98,39 @@ export default class News extends React.Component {
       </a>
     ))
   }
+  // Groups 组
+  renderGroups(item) {
+    return (
+      <Flex className="grid-item" justify="between">
+        <div className="desc">
+          <h3>{item.title}</h3>
+          <p>{item.desc}</p>
+        </div>
+        <img src={this.base + item.imgSrc} alt={item.desc} />
+      </Flex>
+    )
+  }
+  //   最新资讯
+  renderNews() {
+    return this.state.news.map(item => (
+      <div className="news-item" key={item.id}>
+        <div className="imgWrap">
+          <img className="img" src={this.base + item.imgSrc} alt=""></img>
+        </div>
+        <Flex className="content" justify="between" direction="column">
+          <h3 className="title">{item.title}</h3>
+          <Flex className="info" justify="between">
+            <span>{item.from}</span>
+            <span>{item.date}</span>
+          </Flex>
+        </Flex>
+      </div>
+    ))
+  }
+
   render() {
+    const { state } = this
+
     return (
       <div className="Index">
         {/* 轮播图 */}
@@ -106,8 +143,37 @@ export default class News extends React.Component {
             ''
           )}
         </div>
+        {/* 轮播图 */}
+
         {/* Nav 导航 */}
         <Flex className="nav">{this.renderNav()}</Flex>
+        {/* NAV 导航!!! */}
+
+        {/* 租房小组!!! */}
+        <div className="group">
+          {/* 标题 */}
+          <Flex className="group-title" justify="between">
+            <h3>租房小组</h3>
+            <span>更多</span>
+          </Flex>
+          {/* Grid布局 */}
+          <Grid
+            data={state.groups}
+            activeStyle
+            columnNum={2}
+            square={false}
+            hasLine={false}
+            renderItem={item => this.renderGroups(item)}
+          />
+        </div>
+        {/* 租房小组!!! */}
+
+        {/* 最新资讯!!! */}
+        <div className="news">
+          <h3 className="news-title">最新资讯</h3>
+          <WingBlank size="md">{this.renderNews()}</WingBlank>
+        </div>
+        {/* 最新资讯!!! */}
       </div>
     )
   }
