@@ -1,3 +1,7 @@
+# 知识点梳理
+
+## 执行
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
@@ -66,3 +70,92 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `yarn build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+## Object.keys
+
+```js
+var Arr = [1, 2, 3]
+Object.keys(Arr) // 输出索引0,1,2
+var Arr = [('a': [{ label: '', value: '' }]), ('b': [{ label: '', value: '' }])]
+Object.keys(Arr) // 输出属性a,b
+```
+
+## If...in
+
+```js
+// 判断arr中是否存在a
+const a = 1
+const arr = [1, 2, 3, 4, 5, 6]
+if (a in arr) {
+}
+```
+
+## react-virtualized
+
+### 作用:列表布局
+
+### 使用
+
+```js
+// 安装
+npm install react-virtualized
+// 引入样式
+import 'react-virtualized / styles.css'
+//导入所需组件
+import {Column, Table,Grid,List,AutoSizer} from 'react-virtualized';
+
+// 1.获取城市列表
+getCityList = async(){
+    const res = await request.get('/area/city')
+    // cityLisy 为城市列表 cityIndex 为城市首字母列表
+   	const {cityList,cityIndex} = res.data.body
+    //修改state内容
+    this.setState({
+        cityList,
+        cityIndex
+    })
+}
+// 创建一个ref对象,为了获取滚动条进行操作
+this.cityListComponent = React.createRef()
+
+// 渲染行中内容
+// key 行内唯一标识
+// index 索引
+// isScorlling 这行正在滚动.....
+// isVisible 这行是否可见
+// style 样式
+rowRenderer({key,index,isScrolling,isVisible,style})=>{
+    const {cityIndex,cityList} = this.state
+    const letter = cityIndex[index]
+    return (
+    	<div key={key} style={style}>  // 添加唯一标识
+        	<div className="title"> // title 首字符分类a,b,c
+        		{letter}
+			</div>
+			{
+                cityList[letter].map(item=>(
+                	<div className="name" key={iten.value} onClick={()=>{this.changeCity(item)}}> // 每一组中的每一行 changeCity 为改变定位方法
+                    {item.lable} // label 为城市名字 value 唯一比标识
+                    </div>
+
+                ))
+            }
+        </div>
+    )
+}
+
+// 使用List列表布局
+// AutoSizer 为自动调整大小
+<AutoSizer>
+    {({widt,height})=>{
+        <List
+		ref = {this.cityListComponent}
+		width = {width}
+		height = {height}
+		rowCount = {this.state.cityIndex.length} //多少行 列表中的行数
+		onRowsRendered = {this.rowRenderer} // 行中内容 组件 需要渲染的 负责渲染行。
+	/>
+    }}
+</AutoSizer>
+
+```

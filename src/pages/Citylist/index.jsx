@@ -193,7 +193,7 @@ export default class News extends React.Component {
               ref={this.cityListComponent}
               width={width}
               height={height}
-              rowCount={this.state.cityIndex.length}
+              rowCount={state.cityIndex.length}
               rowHeight={this.getRowHeight}
               rowRenderer={this.rowRenderer}
               onRowsRendered={this.onRowsRendered}
