@@ -1,10 +1,11 @@
 import React from 'react'
-import { Carousel, Flex, Grid, WingBlank, NavBar, Icon } from 'antd-mobile'
+import { Carousel, Flex, Grid, WingBlank } from 'antd-mobile'
 import './index.css'
 import Nav1 from '../../assets/images/nav-1.png'
 import Nav2 from '../../assets/images/nav-2.png'
 import Nav3 from '../../assets/images/nav-3.png'
 import Nav4 from '../../assets/images/nav-4.png'
+import SearchHeader from '../../components/SearchHeader'
 import request from '../../utils/axios.js'
 import { getDatas } from './api.js'
 import { getCurrCity } from '../../utils/getCity.js'
@@ -48,7 +49,7 @@ export default class News extends React.Component {
     },
   }
 
-  async componentDidMount() {
+  async componentDidMount () {
     this.loadCurrCity()
     const getSwipers = getDatas('/home/swiper')
     const getHouse = getDatas('/home/groups')
@@ -91,7 +92,7 @@ export default class News extends React.Component {
     ))
   }
   // Groups 组
-  renderGroups(item) {
+  renderGroups (item) {
     return (
       <Flex className="grid-item" justify="between">
         <div className="desc">
@@ -103,7 +104,7 @@ export default class News extends React.Component {
     )
   }
   //   最新资讯
-  renderNews() {
+  renderNews () {
     return this.state.news.map(item => (
       <div className="news-item" key={item.id}>
         <div className="imgWrap">
@@ -120,7 +121,7 @@ export default class News extends React.Component {
     ))
   }
   // render导航
-  renderNav() {
+  renderNav () {
     return navs.map(item => (
       <Flex.Item
         key={item.id}
@@ -141,31 +142,12 @@ export default class News extends React.Component {
       })
     })
   }
-  render() {
+  render () {
     const { state } = this
 
     return (
       <div className="Index">
-        {/* 导航 */}
-        <NavBar
-          style={{ color: '#000' }}
-          mode="light"
-          leftContent={state.cityInfo.label}
-          onLeftClick={() => console.log('onLeftClick')}
-          rightContent={[
-            <Icon
-              key="0"
-              type="search"
-              style={{ marginRight: '16px' }}
-              onClick={() => {
-                this.props.history.push('/map')
-              }}
-            />,
-          ]}
-        >
-          自如租房
-        </NavBar>
-        {/* 导航 */}
+
 
         {/* 轮播图 */}
         <div className="swiper">
@@ -174,8 +156,10 @@ export default class News extends React.Component {
               {this.renderSwipers()}
             </Carousel>
           ) : (
-            ''
-          )}
+              ''
+            )}
+          {/* 搜索框 */}
+          <SearchHeader cityName={this.state.cityInfo.label} />
         </div>
         {/* 轮播图 */}
 

@@ -12,6 +12,7 @@ import Index from '../Index'
 const News = lazy(() => import('../News'))
 const HouseList = lazy(() => import('../HouseList'))
 const Profile = lazy(() => import('../Profile'))
+
 // TabBar 数据
 const tabItems = [
   {
@@ -55,7 +56,7 @@ export default class Home extends React.Component {
   }
 
   // 组件接收到新的props（此处，实际上是路由信息）就会触发该钩子函数
-  componentDidUpdate(prevProps) {
+  componentDidUpdate (prevProps) {
     // prevProps 上一次的props，此处也就是上一次的路由信息
     // this.props 当前最新的props，此处也就是最新的路由信息
     // 注意：在该钩子函数中更新状态时，一定要在 条件判断 中进行，否则会造成递归更新的问题
@@ -68,7 +69,7 @@ export default class Home extends React.Component {
   }
 
   // 渲染 TabBar.Item
-  renderTabBarItem() {
+  renderTabBarItem () {
     return tabItems.map(item => (
       <TabBar.Item
         badge={100}
@@ -88,7 +89,7 @@ export default class Home extends React.Component {
     ))
   }
 
-  render() {
+  render () {
     return (
       <div className="home">
         {/* 2.3 渲染子路由 */}
