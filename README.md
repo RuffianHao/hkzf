@@ -112,7 +112,8 @@ getCityList = async(){
     //修改state内容
     this.setState({
         cityList,
-        cityIndex
+        cityIndex,
+        activeIndex: 0 //高亮索引
     })
 }
 // 创建一个ref对象,为了获取滚动条进行操作
@@ -144,6 +145,38 @@ rowRenderer({key,index,isScrolling,isVisible,style})=>{
     )
 }
 
+// 获取list组件中 渲染行的内容 滚动条滚动 顶部索引改变时执行
+onRowsRendered = ({startIndex}) => {
+    // startIndex ====> 顶部开始的行索引
+    // activeIndex ====> 当前选中的右侧行索引
+    if( this.state.activeIndex !== startIndex ) {
+        this.setState=({
+            activeIndex:startIndex // 获取当前开始的索引
+        })
+    }
+}
+
+
+// 渲染右侧索引列表
+renderCityIndex(){
+    const {cityIndex,activeIndex} = this.state
+    return cityIndex.map((item.index)=>{
+        <li :key={index} onClick={()=>{
+            // scrollToRow(number) 行索引以确保可见（必要时通过强制滚动）
+            // 点击时使滚动条发生改变
+            this.cityListComponent.current.scrollToRow(index)
+        }}>
+            // 改变样式
+            <span className={activeIndex === index ? 'index-active' :''}>		
+        		{item}
+
+			</span>
+        </li>
+    })
+}
+
+
+
 // 使用List列表布局
 // AutoSizer 为自动调整大小
 <AutoSizer>
@@ -153,9 +186,12 @@ rowRenderer({key,index,isScrolling,isVisible,style})=>{
 		width = {width}
 		height = {height}
 		rowCount = {this.state.cityIndex.length} //多少行 列表中的行数
-		onRowsRendered = {this.rowRenderer} // 行中内容 组件 需要渲染的 负责渲染行。
+		RowRender = {this.rowRenderer} // 行中内容 组件 需要渲染的 负责渲染行。
+        onRowsRendered={this.onRowsRendered} // 渲染的行内消息的回调信息参数:{startIndex: number, stopIndex: number }// 开始索引,结束索引
+        scrollToAlignment="start" //控制滚动到单元格的对齐方式。默认值（“ auto ”）滚动最少的量，以确保指定的单元格完全可见。使用“ start ”始终对准细胞顶端/左的Grid和“ end ”来调节它们底部/右。使用“ center ”在容器的中间对齐指定的单元格。
 	/>
     }}
 </AutoSizer>
+<ul>{this.renderCityIndex()}</ul>
 
 ```

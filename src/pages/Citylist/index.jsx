@@ -82,7 +82,7 @@ export default class News extends React.Component {
     await this.getCities()
     // 调用 measureAllRows，提前计算 List 中每一行的高度，实现 scrollToRow 的精确跳转
     this.cityListComponent.current.measureAllRows()
-    console.log(this.cityListComponent)
+
   }
 
 
@@ -157,7 +157,7 @@ export default class News extends React.Component {
         className="city-index-item"
         key={item}
         onClick={() => {
-          this.cityListComponent.current.scrollToRow(index)
+          this.cityListComponent.current.scrollToRow(index) // scrollToRow(number) 行索引以确保可见（必要时通过强制滚动）。优先于scrollTop。
           console.log('当前索引号：', index)
         }}
       >

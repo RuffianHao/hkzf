@@ -6,7 +6,6 @@ import Nav2 from '../../assets/images/nav-2.png'
 import Nav3 from '../../assets/images/nav-3.png'
 import Nav4 from '../../assets/images/nav-4.png'
 import SearchHeader from '../../components/SearchHeader'
-import request from '../../utils/axios.js'
 import { getDatas } from './api.js'
 import { getCurrCity } from '../../utils/getCity.js'
 // 导航菜单数据
