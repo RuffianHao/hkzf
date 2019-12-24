@@ -90,6 +90,31 @@ if (a in arr) {
 }
 ```
 
+##  百度地图API
+
+### 获取本地位置
+
+```jsx
+1.// 引入地图api
+public->index.html 引入api
+<script type="text/javascript" src="http://api.map.baidu.com/api?你的key">
+2.// 创建BMap实例 
+const myCity = new BMap.LocalCity()
+3.// 获取位置 
+mycity.get(result=>{
+    console.log(result)
+    当前地理位置 = result.name
+})
+```
+
+
+
+
+
+
+
+
+
 ## react-virtualized
 
 ### 作用:列表布局
@@ -118,7 +143,10 @@ getCityList = async(){
 }
 // 创建一个ref对象,为了获取滚动条进行操作
 this.cityListComponent = React.createRef()
-
+componentDidmount(){
+	// 调用 measureAllRows，提前计算 List 中每一行的高度，实现 scrollToRow 的精确跳转 
+ 	this.cityListComponent.current.measureAllRows()
+}
 // 渲染行中内容
 // key 行内唯一标识
 // index 索引

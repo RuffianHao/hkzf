@@ -14,9 +14,9 @@ const titleList = [
 
 // 标题高亮状态
 const titleSelectedStatus = {
-  area: false,
+  area: true,
   mode: true,
-  price: true,
+  price: false,
   more: false
 }
 
