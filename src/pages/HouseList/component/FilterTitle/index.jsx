@@ -12,32 +12,24 @@ const titleList = [
   { title: '筛选', type: 'more' }
 ]
 
-// 标题高亮状态
-const titleSelectedStatus = {
-  area: true,
-  mode: true,
-  price: false,
-  more: false
-}
-
-// 头部标题Flex-Item
-function renderTitleList () {
-  return titleList.map((item) => (
-    <Flex.Item key={item.type}>
-      <span className={[style.dropdown, titleSelectedStatus[item.type] ? style.selected : ''].join(' ')}>
-        <span>{item.title}</span>
-        <i className="iconfont icon-arrow"></i>
-      </span>
-    </Flex.Item >
-  ))
-}
 
 
-function FilterTitle () {
+function FilterTitle ({ titleSelectedStatus, onTitleClick }) {
   return (
-    <div className="filtertitle">
+    <div className={style.filtertitle}>
       <Flex align="center" className={style.root} >
-        {renderTitleList()}
+        {
+          titleList.map((item) => {
+            return (
+              <Flex.Item key={item.type} onClick={() => onTitleClick(item.type)}>
+                <span className={[style.dropdown, titleSelectedStatus[item.type] ? style.selected : ''].join(' ')}>
+                  <span>{item.title}</span>
+                  <i className="iconfont icon-arrow"></i>
+                </span>
+              </Flex.Item>
+            )
+          })
+        }
       </Flex>
     </div>
   )

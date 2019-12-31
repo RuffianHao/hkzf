@@ -1,0 +1,47 @@
+.root {
+  position: relative;
+  z-index: 3;
+}
+/* 顶部导航栏样式 */
+
+.header {
+  height: 45px;
+  padding: 0 10px;
+  background-color: #f6f5f6;
+}
+
+.header :global(.icon-back) {
+  font-size: 16px;
+  color: #999;
+}
+/* 覆盖 SearchHeader 组件的样式： */
+
+.searchHeader {
+  position: relative;
+  top: 0;
+  padding: 0;
+}
+
+.searchHeader :global(.icon-map) {
+  color: #00ae66;
+}
+
+.searchHeader :global(.search) {
+  height: 30px;
+}
+
+.mask {
+  position: fixed;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.445);
+}
+
+.content {
+  position: relative;
+  z-index: 3;
+  background-color: #fff;
+}
