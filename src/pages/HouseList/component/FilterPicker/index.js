@@ -1,7 +1,7 @@
 /*
  * @Description:
  * @Date: 2019-12-31 11:54:01
- * @LastEditTime : 2020-01-02 14:52:12
+ * @LastEditTime : 2020-01-02 16:46:04
  */
 import React, { Component } from 'react'
 
@@ -33,7 +33,7 @@ export default class FilterPicker extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props)
+    // console.log(this.props)
   }
 
   render() {

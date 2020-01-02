@@ -16,6 +16,8 @@ import SearchHeader from '../../../../components/SearchHeader'
 import { getCity } from '../../../../utils/isCity'
 import { withRouter } from 'react-router-dom'
 
+import FilterMore from '../FilterMore'
+
 // 标题高亮状态
 const titleSelectedStatus = {
   area: true,
@@ -43,6 +45,13 @@ class Filter extends React.Component {
     selectedValues: selectedValues // 选中条件的默认值
   }
 
+  componentDidMount () {
+    // 获取到body
+    this.htmlBody = document.body
+    // 获取filter数据列表
+    this.getFilterData()
+  }
+
 
   // 条件区域列表
   getFilterData = async () => {
@@ -55,14 +64,10 @@ class Filter extends React.Component {
     this.setState({
       filterData: data.body
     })
+    // console.log(data.body)
   }
 
-  componentDidMount () {
-    // 获取到body
-    this.htmlBody = document.body
-    // 获取filter数据列表
-    this.getFilterData()
-  }
+
 
   // 点击菜单实现高亮
   onTitleClick = type => {
@@ -93,7 +98,6 @@ class Filter extends React.Component {
         newTitleSelectedStatus[key] = false
       }
     })
-    console.log(newTitleSelectedStatus)
     this.setState({
       openType: type,
       titleSelectedStatus: newTitleSelectedStatus
@@ -101,13 +105,12 @@ class Filter extends React.Component {
   }
 
 
-
   // 取消按钮
   onCancel = (type) => {
     const { titleSelectedStatus, selectedValues } = this.state
     const newTitleSelectedStatus = { ...titleSelectedStatus }
     const selectedVal = selectedValues[type]
-
+    console.log(selectedValues)
     if (
       type === 'area' &&
       (selectedVal.length === 3 || selectedVal[0] !== 'area')
@@ -128,11 +131,14 @@ class Filter extends React.Component {
       titleSelectedStatus: newTitleSelectedStatus
     })
   }
+
+
   //保存按钮
   onSave = (value, type) => {
 
     const { titleSelectedStatus } = this.state
     const newTitleSelectedStatus = { ...titleSelectedStatus }
+
     // 这里需要注意-> 其实形参value就是选中的Picker里面的数据 ["值"]
     const selectedVal = value
 
@@ -194,6 +200,23 @@ class Filter extends React.Component {
     else { return null }
   }
 
+  // 渲染FilterMore组件 筛选页面
+
+  renderFilerMore = () => {
+    // characteristic 供暖... floor 楼层... oriented 房间朝向.... roomType 房间类型 ...
+    const {
+      openType,
+      filterData: { characteristic, floor, oriented, roomType }
+    } = this.state
+    const data = { roomType, oriented, floor, characteristic }
+    if (openType === 'more') {
+      return <FilterMore data={data} type={openType} onCancel={this.onCancel} />
+    } else {
+      return null
+    }
+  }
+
+
   render () {
     const { openType, titleSelectedStatus } = this.state
     return (
@@ -212,6 +235,7 @@ class Filter extends React.Component {
           <FilterTitle titleSelectedStatus={titleSelectedStatus} onTitleClick={this.onTitleClick} />
           {/* 下拉条件列表 */}
           {this.renderFilterPicker()}
+          {this.renderFilerMore()}
         </div>
 
         {/* 点击前三个展示模态层 */}
