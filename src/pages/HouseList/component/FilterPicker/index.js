@@ -1,7 +1,7 @@
 /*
  * @Description:
  * @Date: 2019-12-31 11:54:01
- * @LastEditTime : 2019-12-31 17:08:46
+ * @LastEditTime : 2020-01-02 14:52:12
  */
 import React, { Component } from 'react'
 
@@ -32,6 +32,10 @@ export default class FilterPicker extends Component {
     })
   }
 
+  componentDidMount() {
+    console.log(this.props)
+  }
+
   render() {
     const { data, onCancel, onSave, cols, type } = this.props
     const { value } = this.state
@@ -51,7 +55,7 @@ export default class FilterPicker extends Component {
             onCancel(type)
           }}
           onSave={() => {
-            onSave(type, value)
+            onSave(value, type)
           }}
         />
       </>

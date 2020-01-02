@@ -39,7 +39,8 @@ class Filter extends React.Component {
     titleSelectedStatus: titleSelectedStatus,// 标题的状态
     openType: '',// 打开的标题
     filterData: [],// 条件数据
-    label: getCity().label // 当前城市
+    label: getCity().label, // 当前城市
+    selectedValues: selectedValues // 选中条件的默认值
   }
 
 
@@ -68,33 +69,103 @@ class Filter extends React.Component {
     // 给 body 添加样式 需要首先获取到body
     this.htmlBody.className = 'body-fixed'
 
-    this.setState({
-      titleSelectedStatus: { ...titleSelectedStatus, [type]: type },
-      openType: type
-    })
+    const { titleSelectedStatus, selectedValues } = this.state
+    const newTitleSelectedStatus = { ...titleSelectedStatus }
 
+    Object.keys(titleSelectedStatus).forEach(key => {
+      const selectedVal = selectedValues[key]
+
+      if (type === key) {
+        newTitleSelectedStatus[type] = true
+      } else if (
+        key === 'area' &&
+        (selectedVal.length === 3 || selectedVal[0] !== 'area')
+      ) {
+        newTitleSelectedStatus[key] = true
+      } else if (key === 'mode' && selectedVal[0] !== 'null') {
+        newTitleSelectedStatus[key] = true
+      } else if (key === 'price' && selectedVal[0] !== 'null') {
+        newTitleSelectedStatus[key] = true
+      } else if (key === 'more') {
+        // 后面实现FilterMore后 再补充
+        // newTitleSelectedStatus[key] = false
+      } else {
+        newTitleSelectedStatus[key] = false
+      }
+    })
+    console.log(newTitleSelectedStatus)
+    this.setState({
+      openType: type,
+      titleSelectedStatus: newTitleSelectedStatus
+    })
   }
 
+
+
   // 取消按钮
-  onCancel = () => {
+  onCancel = (type) => {
+    const { titleSelectedStatus, selectedValues } = this.state
+    const newTitleSelectedStatus = { ...titleSelectedStatus }
+    const selectedVal = selectedValues[type]
+
+    if (
+      type === 'area' &&
+      (selectedVal.length === 3 || selectedVal[0] !== 'area')
+    ) {
+      newTitleSelectedStatus[type] = true
+    } else if (type === 'mode' && selectedVal[0] !== 'null') {
+      newTitleSelectedStatus[type] = true
+    } else if (type === 'price' && selectedVal[0] !== 'null') {
+      newTitleSelectedStatus[type] = true
+    } else if (type === 'more') {
+      // 后面实现FilterMore后 再补充
+      // newTitleSelectedStatus[type] = false
+    } else {
+      newTitleSelectedStatus[type] = false
+    }
     this.setState({
-      openType: ''
+      openType: '',
+      titleSelectedStatus: newTitleSelectedStatus
     })
   }
   //保存按钮
-  onSave = () => {
+  onSave = (value, type) => {
+
+    const { titleSelectedStatus } = this.state
+    const newTitleSelectedStatus = { ...titleSelectedStatus }
+    // 这里需要注意-> 其实形参value就是选中的Picker里面的数据 ["值"]
+    const selectedVal = value
+
+    if (
+      type === 'area' &&
+      (selectedVal.length === 3 || selectedVal[0] !== 'area')
+    ) {
+      newTitleSelectedStatus[type] = true
+    } else if (type === 'mode' && selectedVal[0] !== 'null') {
+      newTitleSelectedStatus[type] = true
+    } else if (type === 'price' && selectedVal[0] !== 'null') {
+      newTitleSelectedStatus[type] = true
+    } else if (type === 'more') {
+      // 后面实现FilterMore后 再补充
+      // newTitleSelectedStatus[type] = false
+    } else {
+      newTitleSelectedStatus[type] = false
+    }
     this.setState({
-      openType: ''
+      openType: '',
+      titleSelectedStatus: newTitleSelectedStatus,
+      selectedValues: { ...this.state.selectedValues, [type]: value }
     })
   }
 
   // 渲染下拉列表
   renderFilterPicker = () => {
-    const { openType, filterData: { area, rentType, price, subway } } = this.state
+    const { openType, selectedValues, filterData: { area, rentType, price, subway } } = this.state
     // onType 为前三个 展示筛选的条件
     if (openType === 'area' || openType === 'mode' || openType === 'price') {
       let data
       let cols = 1
+      let defaultValue = selectedValues[openType]
       switch (openType) {
         case 'area':
           data = [area, subway]
@@ -116,7 +187,8 @@ class Filter extends React.Component {
           data={data}
           cols={cols}
           onCancel={this.onCancel}
-          onSave={this.onSave} />
+          onSave={this.onSave}
+          defaultValue={defaultValue} />
       )
     }
     else { return null }
